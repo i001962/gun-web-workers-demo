@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p>Count numbers: <output id="result"></output></p>
+<p>GUN numbers: <output id="gunnum"></output></p>
+
+<button onclick="startWorker()">Start Worker</button> 
+<button onclick="stopWorker()">Stop Worker and double the time</button>
+
+<p><strong>Note:</strong> Internet Explorer 9 and earlier versions do not support Web Workers.</p>
+
+<script>
+var w;
+//w = new Worker("demo_workers.js");
+
+function startWorker() {
+  if(typeof(Worker) !== "undefined") {
+    if(typeof(w) == "undefined") {
+      w = new Worker("demo_workers.js");
+    }
+    w.onmessage = function(event) {
+      document.getElementById("result").innerHTML = event.data;
+    };
+  } else {
+    document.getElementById("result").innerHTML = "Sorry, your browser does not support Web Workers...";
+  }
+}
+
+function stopWorker() { 
+  if(typeof(Worker) !== "undefined") {
+    if(typeof(x) == "undefined") {
+      x = new Worker("demo_workers_mult.js");
+    }
+    w.onmessage = function(event) {
+      document.getElementById("gunnum").innerHTML = event.data;
+    };
+  } else {
+    document.getElementById("result").innerHTML = "Opps...";
+  }
+  x.postMessage([document.getElementById("gunnum").innerHTML,2]);
+ 
+  x.onmessage = function(e) {
+    result.textContent = e.data;
+    document.getElementById("gunnum").innerHTML = e.data;
+
+    console.log('Message received from worker');
+  }
+  
+  w.terminate();
+  w = undefined;
+}
+
+</script>
+
+</body>
+</html>
